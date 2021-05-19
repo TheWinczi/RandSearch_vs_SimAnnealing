@@ -25,18 +25,26 @@ function [x, y, value, iters, values, xs, ys] = random_search(x0, y0, acc, max_i
     
     while (iters < max_iterations) && (acc < value)
         
-        delta = abs(normrnd(0, sigma));
-        
-        for i = 1:max_finding_iters
-           delta_x = normrnd(0, delta);
-           delta_y = normrnd(0, delta);
-           new_value = func(x + delta_x, y + delta_y);
-           if new_value < value
-               x = x + delta_x;
-               y = y + delta_y;
-               value = new_value;
-               break
-           end
+        while true
+            flag = false;
+            delta = abs(normrnd(0, sigma));
+            
+            for i = 1:max_finding_iters
+               delta_x = normrnd(0, delta);
+               delta_y = normrnd(0, delta);
+               new_value = func(x + delta_x, y + delta_y);
+               if abs(new_value) < abs(value)
+                   x = x + delta_x;
+                   y = y + delta_y;
+                   value = new_value;
+                   flag = true;
+                   break;
+               end
+            end
+            
+            if flag == true
+                break;
+            end
         end
         
         sigma = sigma * 0.9;

@@ -10,39 +10,31 @@
 %       else go to 1.
 % -----------------------------------------------------------------------
 
-function [x, y, value, iters, values, xs, ys] = random_search(x0, y0, acc, max_iterations)
+function [x, y, value, iters, values, xs, ys] = random_search(x0, y0, func, max_iterations, min_value)
     
     value = func(x0, y0);
     x = x0;
     y = y0;
     iters = 0;
     sigma = 10;
-    max_finding_iters = 100;
     
     values = [value];
     xs = [x];
     ys = [y];
+    max_epoch_iters = 20;
     
-    while (iters < max_iterations) && (acc < value)
+    while iters < max_iterations && value > min_value
+        delta = abs(normrnd(0, sigma));
         
-        while true
-            flag = false;
-            delta = abs(normrnd(0, sigma));
-            
-            for i = 1:max_finding_iters
-               delta_x = normrnd(0, delta);
-               delta_y = normrnd(0, delta);
-               new_value = func(x + delta_x, y + delta_y);
-               if abs(new_value) < abs(value)
-                   x = x + delta_x;
-                   y = y + delta_y;
-                   value = new_value;
-                   flag = true;
-                   break;
-               end
-            end
-            
-            if flag == true
+        for i = 1:max_epoch_iters
+            delta_x = normrnd(0, delta);
+            delta_y = normrnd(0, delta);
+            new_value = func(x+delta_x, y+delta_y);
+
+            if new_value < value
+                x = x + delta_x;
+                y = y + delta_y;
+                value = new_value;
                 break;
             end
         end
